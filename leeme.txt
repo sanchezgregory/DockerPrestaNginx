@@ -1,0 +1,73 @@
+
+// Paso a paso
+
+dentro del directorio icbcstore-dev
+docker-compose up --build
+
+Dentro de src/www debe estar el presta, y e docker file lo mapea a /var/www/html
+
+En mysql-workbench, host: 127.0.0.1  port 33061  BD icbcstoreprod  user: root  password: root
+
+==== setting.inc.php =====
+
+define('_DB_NAME_', 'icbcstoredev');
+define('_MYSQL_ENGINE_', 'InnoDB');
+define('_DB_SERVER_', 'mysql');
+define('_DB_USER_', 'root');
+define('_DB_PREFIX_', 'ps_');
+define('_DB_PASSWD_', 'root');
+===================================
+
+Si se quiere el proyecto completo con imagenes, se debe ejecutar el scrip rsync.sh, debe darsele permiso de ejecucion chmod +x rsync.sh (tarda como 5 hrs)
+
+NO OLVIDAR HACER GIT FLOW INIT A LOS MODULOS A EDITAR
+
+=================================================
+
+O se baja modulo a modulo
+
+Para prestashop hacer lo siguiente: -->
+	
+	dentro de la carpeta del proyecto ("project/")
+	1. git clone git@gitlab.com:apernet/icbcstore-core.git .
+	2. git flow init  --> verificar que ya se encuentre en la rama develop
+	3. git clone git@gitlab.com:apernet/icbcstore-override.git override
+	4. git clone git@gitlab.com:apernet/icbcstore-theme.git themes/icbcstore
+	5. git clone git@gitlab.com:apernet/presta-decidir2.0.git modules/decidir
+	6. git clone git@gitlab.com:apernet/presta-vtex16.git modules/vtexmodule
+	7. git clone git@gitlab.com:apernet/presta-productsmarks.git modules/productsmarks
+	8. git clone git@gitlab.com:apernet/presta-productshippingcostcalculator.git modules/productshippingcostcalculator
+	9. git clone git@gitlab.com:apernet/icbcstore-blocktopmenu.git modules/blocktopmenu
+	10. git clone git@gitlab.com:apernet/presta-pointspayment.git modules/pointspayment
+	11. Eliminar el Dir cache/ (rm -rf cache) y crearlo (mkdir cache);  con todos (sin -r) los permisos (chmod 777 cache)
+	12. Eliminar el Dir themes/icbcstore/cache y crearlo (mkdir cache);  con todos (sin -r) los permisos (chmod 777 cache)
+	13. Eliminar el Dir log/ (del root) y crearlo (mkdir cache);  con todos (sin -r) los permisos (chmod 777 cache)
+	14. Crear el archivo setting.inc.php en base al template
+	15. Crear el .htaccess  (touch .htaccess,  chmod 777 .htaccess)
+
+=========================================================================
+	Para empezar con prestashop:  http (sin ssl) = "No activado"
+		
+		Tabla = PS_CONFIGURATION 
+			Campo= [ PS_SHOP_DOMAIN] = "localhost:9000" 
+			Campo= [ PS_SHOP_DOMAIN_SSL] = "localhost:9000"
+			Campo= [ PS_SSL_ENABLED] = 0 
+	
+		Tabla = PS_SHOP_URL 
+			Campo = [PS_SHOP_DOMAIN] = "localhost:9000"
+========================================================================
+=========================================================================
+	Para empezar con prestashop:  https (ssl)
+		
+		Tabla = PS_CONFIGURATION 
+			Campo= [ PS_SHOP_DOMAIN] = "https://localhost:3000" 
+			Campo= [ PS_SHOP_DOMAIN_SSL] = "https://localhost:3000"
+			Campo= [ PS_SSL_ENABLED] = 1 
+	
+		Tabla = PS_SHOP_URL 
+			Campo = [PS_SHOP_DOMAIN] = "localhost:3000"
+========================================================================
+
+		En la tabla ps_configuracion el valor RECAPTCHA_API_KEY - Si existe hace la validacion. Para deshabilitar la funcion de 
+		recaptcha, se cambia su nombre ej: RECAPTCHA_API_KEY_old
+

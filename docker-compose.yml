@@ -1,0 +1,36 @@
+version: '3'
+services:
+    web:
+        build: ./etc/nginx
+        volumes:
+            - "./etc/ssl:/etc/ssl"
+            - "./web:/var/www/html"
+        ports:
+            - "9000:80"
+            - "3000:443"
+        restart: always
+        depends_on:
+            - php
+            - mysqldb
+    php:
+        image: nanoninja/php-fpm:${PHP_VERSION}
+        restart: always
+        volumes:
+            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - "./etc/php/www.conf:/usr/local/etc/php-fpm.d/www.conf"
+            - "./web:/var/www/html"
+    mysqldb:
+        image: mysql:${MYSQL_VERSION}
+        container_name: ${MYSQL_HOST}
+        restart: always
+        env_file:
+            - ".env"
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        ports:
+            - "6001:3306"
+        volumes:
+            - "./data/db/mysql:/var/lib/mysql"
